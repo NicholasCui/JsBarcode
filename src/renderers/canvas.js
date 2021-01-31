@@ -15,6 +15,14 @@ class CanvasRenderer{
 		}
 
 		this.prepareCanvas();
+		var rotateHeight = this.canvas.width - this.options.marginTop;
+		var rotateDeg = 90 * Math.PI / 180;
+
+		if (this.options.rotate) {
+			var ctx = this.canvas.getContext("2d");
+			ctx.rotate(rotateDeg);
+			ctx.translate(this.options.marginLeft, -rotateHeight);
+		}
 		for(let i = 0; i < this.encodings.length; i++){
 			var encodingOptions = merge(this.options, this.encodings[i].options);
 
@@ -37,9 +45,15 @@ class CanvasRenderer{
 		var totalWidth = getTotalWidthOfEncodings(this.encodings);
 		var maxHeight = getMaximumHeightOfEncodings(this.encodings);
 
-		this.canvas.width = totalWidth + this.options.marginLeft + this.options.marginRight;
-
-		this.canvas.height = maxHeight;
+		var width = totalWidth + this.options.marginLeft + this.options.marginRight;
+		var height = maxHeight;
+		if (this.options.rotate) {
+			this.canvas.width = height;
+			this.canvas.height = width;
+		} else {
+			this.canvas.width = width;
+			this.canvas.height = height;
+		}
 
 		// Paint the canvas
 		ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
